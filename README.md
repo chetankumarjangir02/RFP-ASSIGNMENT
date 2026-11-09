@@ -153,6 +153,23 @@ Upload a bid **folder** (browser folder picker) → it is saved server-side unde
 `data/<bid_id>/` and indexed. The uploaded bid becomes the active context for every tab
 automatically — Search, Ask and Extract all scope to it (no bid id to re-type).
 
+#### The four tabs
+
+The left sidebar shows a live **backend status** dot and the **active bid**; whatever you
+upload becomes the active bid shared by every tab (no id to re-type anywhere).
+
+| Tab | What it does | Inputs / controls | Output |
+|---|---|---|---|
+| **Upload** | Ingests & indexes a bid folder. Saves the folder's `.pdf`/`.html` files under `data/<bid_id>/` and indexes them into the hybrid store (incremental upsert). The folder name auto-fills `bid_id`; unsupported files are skipped. | Folder picker, editable `bid_id` | *"Indexed N chunks from M file(s)"* — and this bid becomes active everywhere |
+| **Search** | Raw hybrid retrieval, **no LLM** — returns ranked, cited passages straight from the index. | `q`, `doc_type` (any / `bid_page` / `rfp` / `addendum` / `specs` / `affidavit`), `top_k`, `mode` (`hybrid_rerank` / `hybrid` / `vector` / `keyword`) | Passages, each with source **file + page** |
+| **Ask** | Cited natural-language **Q&A**: retrieves passages, then the LLM answers using **only** those passages (never guesses). Includes one-click sample prompts. | Question (⌘/Ctrl + Enter) | An **Answer** card + the **Evidence** passages it was grounded in |
+| **Extract** | Runs the full **LangGraph multi-agent pipeline** over the bid and returns the structured 20-field record. | **Run extraction** (scoped to the active bid) | **Passed / Failed / Not-found** metrics, an addendum-reconciliation banner, per-field **value + confidence + citations + notes**, and a **Download `<bid>.json`** button |
+
+> **First upload is slow** — it downloads the local embedding + reranker models once.
+> **Addendum note:** the **Extract** tab reconciles addendum overrides (e.g. Due Date) and
+> is the source of truth for those fields; the lighter **Ask** path does not run that
+> reconciliation (see *Assumptions & known limitations*).
+
 ## Design decisions
 
 - **Chunking — paragraph/table-aware, `CHUNK_SIZE=800`, `CHUNK_OVERLAP=150` (chars).**
