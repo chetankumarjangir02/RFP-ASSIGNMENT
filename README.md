@@ -286,5 +286,8 @@ data/ (inputs)   storage/ (index)   outputs/ (JSON + traces)   docs/   frontend/
   used Azure GPT‑4.
 - `data/bid_3` is a small **synthetic** folder used to demonstrate unseen-bid
   generalization, not a provided bid.
-- OCR for scanned pages is not implemented (bonus); unreadable/empty pages are logged and
-  skipped rather than OCR'd.
+
+## Demo Video Public Link 
+https://drive.google.com/file/d/14bcqiPCYqDfjz-sJFtWBes3_DPcKEK6o/view?usp=sharing
+
+In case any downloads are required, please download the review.
